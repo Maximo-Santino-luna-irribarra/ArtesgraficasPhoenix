@@ -1,22 +1,36 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild, computed, inject, signal } from '@angular/core';
 import { animate, createTimeline, stagger } from 'animejs';
-import { ArrowRight, Check, ChevronDown, Instagram, Mail, MapPin, Menu, MessageCircle, PenTool, Printer, Scissors, X, Zap, LucideAngularModule } from 'lucide-angular';
+import { LucideArrowRight, LucideCamera, LucideCheck, LucideChevronDown, LucideDynamicIcon, LucideMail, LucideMapPin, LucideMenu, LucideMessageCircle, LucidePenTool, LucidePrinter, LucideScissors, LucideX, LucideZap } from '@lucide/angular';
 import { MotionService } from './shared/motion.service';
 import { RevealDirective } from './shared/reveal.directive';
 
 type Category = 'Todos' | 'Carteleria' | 'Ploteos' | 'Vidrieras';
 
-@Component({ selector: 'app-root', imports: [LucideAngularModule, RevealDirective], templateUrl: './app.html', styleUrl: './app.css', changeDetection: ChangeDetectionStrategy.OnPush })
+@Component({ selector: 'app-root', imports: [LucideDynamicIcon, RevealDirective], templateUrl: './app.html', styleUrl: './app.css', changeDetection: ChangeDetectionStrategy.OnPush })
 export class App implements AfterViewInit, OnDestroy {
-  readonly icons = { ArrowRight, Check, ChevronDown, Instagram, Mail, MapPin, Menu, MessageCircle, PenTool, Printer, Scissors, X, Zap };
+  readonly icons = {
+    ArrowRight: LucideArrowRight,
+    Check: LucideCheck,
+    ChevronDown: LucideChevronDown,
+    Instagram: LucideCamera,
+    Mail: LucideMail,
+    MapPin: LucideMapPin,
+    Menu: LucideMenu,
+    MessageCircle: LucideMessageCircle,
+    PenTool: LucidePenTool,
+    Printer: LucidePrinter,
+    Scissors: LucideScissors,
+    X: LucideX,
+    Zap: LucideZap,
+  };
   readonly menuOpen = signal(false);
   readonly category = signal<Category>('Todos');
   readonly categories: Category[] = ['Todos', 'Carteleria', 'Ploteos', 'Vidrieras'];
   readonly services = [
-    { icon: Printer, number: '01', title: 'Impresion gran formato', text: 'Color preciso y terminaciones impecables para piezas que se ven de lejos.' },
-    { icon: Zap, number: '02', title: 'Carteleria', text: 'Soluciones para interiores y exteriores pensadas para durar y comunicar.' },
-    { icon: Scissors, number: '03', title: 'Corte laser', text: 'Cortes limpios y exactos en una amplia variedad de materiales.' },
-    { icon: PenTool, number: '04', title: 'Diseno grafico', text: 'Convertimos una idea suelta en una pieza lista para producir.' },
+    { icon: LucidePrinter, number: '01', title: 'Impresion gran formato', text: 'Color preciso y terminaciones impecables para piezas que se ven de lejos.' },
+    { icon: LucideZap, number: '02', title: 'Carteleria', text: 'Soluciones para interiores y exteriores pensadas para durar y comunicar.' },
+    { icon: LucideScissors, number: '03', title: 'Corte laser', text: 'Cortes limpios y exactos en una amplia variedad de materiales.' },
+    { icon: LucidePenTool, number: '04', title: 'Diseno grafico', text: 'Convertimos una idea suelta en una pieza lista para producir.' },
   ];
   readonly projects = [
     { category: 'Carteleria', title: 'Cartel de chapa', className: 'project-photo', label: 'Carteleria exterior', image: '/assets/laburos/carteles de chapa/b62ebe99-007a-4430-bada-c81f344bc210.png' },
