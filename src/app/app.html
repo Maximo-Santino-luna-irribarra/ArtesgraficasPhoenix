@@ -76,8 +76,11 @@
     <div class="projects-grid" phoenixReveal children=".project-card">
       @for (project of visibleProjects(); track project.image) {
         <article [class]="'project-card ' + project.className">
-          <img class="project-image" [src]="project.image" [alt]="project.title" loading="lazy" />
-          <div class="project-meta"><span>{{ project.label }}</span><h3>{{ project.title }}</h3></div>
+          <button class="project-open" type="button" (click)="openProject(project)" [attr.aria-label]="'Ampliar ' + project.title">
+            <img class="project-image" [src]="project.image" [alt]="project.title" loading="lazy" />
+            <span class="project-zoom"><svg [lucideIcon]="icons.ZoomIn" size="18"></svg> Ampliar</span>
+            <span class="project-meta"><small>{{ project.label }}</small><strong>{{ project.title }}</strong></span>
+          </button>
         </article>
       }
     </div>
@@ -123,12 +126,24 @@
   </section>
 </main>
 
-<footer class="footer">
-  <div class="footer-brand">
-    <a class="brand" href="#inicio"><img class="brand-logo footer-logo" src="/assets/logos/lgo negro.svg" alt="Phoenix Grafica" /></a>
-    <p>Ideas que toman forma.</p>
+@if (selectedProject(); as project) {
+  <div class="lightbox" role="dialog" aria-modal="true" [attr.aria-label]="project.title" (click)="closeFromBackdrop($event)">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen" (click)="closeProject()"><svg [lucideIcon]="icons.X" size="24"></svg></button>
+    <figure>
+      <img [src]="project.image" [alt]="project.title" />
+      <figcaption><span>{{ project.label }}</span><strong>{{ project.title }}</strong></figcaption>
+    </figure>
   </div>
-  <div><strong>CONTACTO</strong><a href="mailto:hola@phoenixgrafica.com"><svg [lucideIcon]="icons.Mail" size="15"></svg> hola@phoenixgrafica.com</a><span><svg [lucideIcon]="icons.MapPin" size="15"></svg> Buenos Aires, Argentina</span></div>
-  <div><strong>SEGUINOS</strong><a href="#"><svg [lucideIcon]="icons.Instagram" size="16"></svg> Instagram</a></div>
-  <small>2026 Phoenix Grafica.</small>
+}
+
+<footer class="footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a class="brand" href="#inicio"><img class="brand-logo footer-logo" src="/assets/logos/lgo negro.svg" alt="Phoenix Grafica" /></a>
+      <p>Ideas que toman forma. Diseño, impresión y producción gráfica.</p>
+    </div>
+    <div class="footer-column"><strong>CONTACTO</strong><a href="mailto:hola@phoenixgrafica.com"><svg [lucideIcon]="icons.Mail" size="15"></svg> hola@phoenixgrafica.com</a><span><svg [lucideIcon]="icons.MapPin" size="15"></svg> Buenos Aires, Argentina</span></div>
+    <div class="footer-column"><strong>SEGUINOS</strong><a href="#"><svg [lucideIcon]="icons.Instagram" size="16"></svg> Instagram</a><a href="#contacto">Pedir presupuesto <svg [lucideIcon]="icons.ArrowRight" size="14"></svg></a></div>
+  </div>
+  <div class="footer-bottom"><small>© 2026 Phoenix Grafica.</small><a href="#inicio">Volver arriba ↑</a></div>
 </footer>

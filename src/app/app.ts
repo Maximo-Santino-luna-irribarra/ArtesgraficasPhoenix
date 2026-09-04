@@ -1,6 +1,6 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild, computed, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, OnDestroy, ViewChild, computed, inject, signal } from '@angular/core';
 import { animate, createTimeline, stagger } from 'animejs';
-import { LucideArrowRight, LucideCamera, LucideCheck, LucideChevronDown, LucideDynamicIcon, LucideMail, LucideMapPin, LucideMenu, LucideMessageCircle, LucidePenTool, LucidePrinter, LucideScissors, LucideX, LucideZap } from '@lucide/angular';
+import { LucideArrowRight, LucideCamera, LucideCheck, LucideChevronDown, LucideDynamicIcon, LucideMail, LucideMapPin, LucideMenu, LucideMessageCircle, LucidePenTool, LucidePrinter, LucideScissors, LucideX, LucideZap, LucideZoomIn } from '@lucide/angular';
 import { MotionService } from './shared/motion.service';
 import { RevealDirective } from './shared/reveal.directive';
 
@@ -22,6 +22,7 @@ export class App implements AfterViewInit, OnDestroy {
     Scissors: LucideScissors,
     X: LucideX,
     Zap: LucideZap,
+    ZoomIn: LucideZoomIn,
   };
   readonly menuOpen = signal(false);
   readonly category = signal<Category>('Todos');
@@ -42,6 +43,7 @@ export class App implements AfterViewInit, OnDestroy {
     { category: 'Vidrieras', title: 'Vidriera comercial', className: 'project-photo', label: 'Ploteo de vidrieras', image: '/assets/laburos/ploteo de vidrieras/WhatsApp Image 2026-08-27 at 16.01.53.jpeg' },
     { category: 'Vidrieras', title: 'Grafica para vidriera', className: 'project-photo', label: 'Vinilo de corte', image: '/assets/laburos/ploteo de vidrieras/WhatsApp Image 2026-08-27 at 16.02.05.jpeg' },
   ];
+  readonly selectedProject = signal<(typeof this.projects)[number] | null>(null);
   readonly visibleProjects = computed(() => this.category() === 'Todos' ? this.projects : this.projects.filter((project) => project.category === this.category()));
   readonly process = [['01', 'Idea', 'Nos contas que necesitas.'], ['02', 'Diseno', 'Le damos forma y precision.'], ['03', 'Produccion', 'Lo hacemos realidad.'], ['04', 'Terminacion', 'Cuidamos cada detalle.'], ['05', 'Entrega', 'Listo para destacar.']];
   @ViewChild('hero') private hero?: ElementRef<HTMLElement>;
@@ -76,6 +78,25 @@ export class App implements AfterViewInit, OnDestroy {
 
   press(event: Event): void { if (!this.motion.reduced()) this.animations.push(animate(event.currentTarget as HTMLElement, { scale: [1, 0.97, 1], duration: 280, ease: 'inOut(2)' })); }
 
+  openProject(project: (typeof this.projects)[number]): void {
+    this.selectedProject.set(project);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeProject(): void {
+    this.selectedProject.set(null);
+    document.body.style.overflow = '';
+  }
+
+  closeFromBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) this.closeProject();
+  }
+
+  @HostListener('document:keydown.escape')
+  closeProjectWithEscape(): void {
+    if (this.selectedProject()) this.closeProject();
+  }
+
   private observeProcess(): void {
     const section = this.processSection?.nativeElement;
     if (!section) return;
@@ -90,5 +111,5 @@ export class App implements AfterViewInit, OnDestroy {
     this.processObserver.observe(section);
   }
 
-  ngOnDestroy(): void { this.processObserver?.disconnect(); this.animations.forEach((animation) => animation.cancel()); }
+  ngOnDestroy(): void { document.body.style.overflow = ''; this.processObserver?.disconnect(); this.animations.forEach((animation) => animation.cancel()); }
 }
